@@ -1,0 +1,23 @@
+{
+  "format": "unipackage-slice-pre1",
+  "noExports": true,
+  "packageVariables": [],
+  "uses": [
+    {
+      "package": "meteor"
+    },
+    {
+      "package": "flow-kNN"
+    }
+  ],
+  "resources": [
+    {
+      "type": "prelink",
+      "file": "tests.browser/packages/flow-kNNtests.js",
+      "length": 736,
+      "offset": 0,
+      "servePath": "/packages/flow-kNN:tests.js",
+      "sourceMap": "tests.browser/packages/flow-kNNtests.js.map"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "format": "unipackage-slice-pre1",
+  "packageVariables": [
+    {
+      "name": "Node",
+      "export": true
+    },
+    {
+      "name": "NodeManager",
+      "export": true
+    },
+    {
+      "name": "FeatureSpec",
+      "export": true
+    }
+  ],
+  "uses": [
+    {
+      "package": "meteor"
+    },
+    {
+      "package": "underscore"
+    }
+  ],
+  "resources": [
+    {
+      "type": "prelink",
+      "file": "os/packages/flow-kNN.js",
+      "length": 0,
+      "offset": 0,
+      "servePath": "/packages/flow-kNN.js",
+      "sourceMap": "os/packages/flow-kNN.js.map"
+    }
+  ]
+}

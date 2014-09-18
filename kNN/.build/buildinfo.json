@@ -1,0 +1,45 @@
+{
+  "builtBy": "meteor/10",
+  "sliceDependencies": {
+    "browser.json": {
+      "files": {
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/package.js": "f5b20cec0b5a1981a786478bab5ffc6f7187b22d",
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/lib/kNearestNeighbor.js": "c32bb54847716126dea506296b68b40439ad6338",
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/lib/draw.js": "2a546b74bf0b717ee8c06997a48af45bafe0c62f"
+      },
+      "directories": []
+    },
+    "os.json": {
+      "files": {
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/package.js": "f5b20cec0b5a1981a786478bab5ffc6f7187b22d"
+      },
+      "directories": []
+    },
+    "tests.browser.json": {
+      "files": {
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/package.js": "f5b20cec0b5a1981a786478bab5ffc6f7187b22d",
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/tests/kNearestNeighbor_tests.js": "c4a2c593e330a97149def8db6ab078ff9659c4be"
+      },
+      "directories": []
+    },
+    "tests.os.json": {
+      "files": {
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/package.js": "f5b20cec0b5a1981a786478bab5ffc6f7187b22d",
+        "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/tests/kNearestNeighbor_tests.js": "c4a2c593e330a97149def8db6ab078ff9659c4be"
+      },
+      "directories": []
+    }
+  },
+  "pluginDependencies": {
+    "files": {
+      "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN/package.js": "f5b20cec0b5a1981a786478bab5ffc6f7187b22d"
+    },
+    "directories": []
+  },
+  "pluginProviderPackages": {
+    "flow-kNN": "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN",
+    "meteor": "/Users/ahmedhassan/.meteor/packages/meteor/d06ae22393",
+    "underscore": "/Users/ahmedhassan/.meteor/packages/underscore/381c001cdc"
+  },
+  "source": "/Users/ahmedhassan/github/Projects/flow-soundDev/packages/flow-kNN"
+}
