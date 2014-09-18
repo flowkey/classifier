@@ -1,46 +1,10 @@
 {
-    "name": "flow-classifier",
-    "description": "Uses k-Nearest-Neighbor to classify audio signals",
-    "homepage": "",
-    "author": "Your Name <your@email> (http://yoursite)",
-    "version": "0.0.1",
-    "git": "",
     "packages": {
-        "flow-functionstack": {
-            "path": "../../followerPackages/flow-functionstack"
+        "webaudio-manager": {
+            "git": "https://github.com/flowkey/webaudio-manager.git"
         },
-        "flow-chroma": {
-            "path": "../../followerPackages/flow-chroma"
-        },
-        "flow-webaudioManager": {
-            "path": "../../followerPackages/flow-webaudioManager"
-        },        
-        "flow-spectralFlux": {
-            "path": "../../followerPackages/flow-spectralFlux"
-        },        
-        "flow-spectralCentroid": {
-            "path": "../../followerPackages/flow-spectralCentroid"
-        }, 
-        "flow-spectralRolloff": {
-            "path": "../../followerPackages/flow-spectralRolloff"
-        },        
-        "flow-cfa": {
-            "path": "../../followerPackages/flow-cfa"
-        },     
-        "flow-rms": {
-            "path": "../../followerPackages/flow-rms"
-        },
-        "flow-zeroCrossingRate": {
-            "path": "../../followerPackages/flow-zeroCrossingRate"
-        },
-        "dsp": {
-            "git": "git@bitbucket.org:flowdevbln/dsp.git"
-        },
-        "flow-math-tool": {
-            "path": "../../followerPackages/flow-math-tool"
-        },
-        "flow-kNN": {
-            "path": "../../followerPackages/flow-kNN"
+        "audiofeatures": {
+            "git": "https://github.com/flowkey/audiofeatures.git"
         }
     }
 }
