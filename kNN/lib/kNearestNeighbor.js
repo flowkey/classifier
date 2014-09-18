@@ -35,30 +35,32 @@ _.extend(NodeManager.prototype, {
         }
     },
 
-    getNeighbors: function(node) {
+    createRandomNode: function(type) {
 
-        var neighbors = [];
+        var randomNode = new Node();
 
+        for (var i = this.featureSpecList.length - 1; i >= 0; i--) {
+            randomNode[this.featureSpecList[i].name] = Math.floor(Math.random() * this.featureSpecList[i].max) + this.featureSpecList[i].min;
+        };
+
+        if (type) {
+            randomNode.type = type;
+        } else {
+            randomNode.type = false;
+        }
+
+        return randomNode;
+    },
+
+    addNeighbors: function(node) {
+
+        /* Clone nodes */
+        node.neighbors = [];
         for (var j in this.nodes) {
             if (!this.nodes[j].type)
                 continue; //immediately start next cycle
-            neighbors.push(new Node(this.nodes[j]));
+            node.neighbors.push(new Node(this.nodes[j]));
         }
-
-        return neighbors;
-    },
-
-
-    determineSingleUnkown: function(node) {
-
-        node.neighbors = this.getNeighbors(node);
-
-        // node.neighbors = [];
-        // for (var j in this.nodes) {
-        //     if (!this.nodes[j].type)
-        //         continue; //immediately start next cycle
-        //     node.neighbors.push(new Node(this.nodes[j]));
-        // }
 
         /* Measure distances */
         node.measureDistances(this.featureSpecList);
@@ -66,13 +68,22 @@ _.extend(NodeManager.prototype, {
         /* Sort by distance */
         node.sortByDistance();
 
+    },
+
+
+    determineSingleUnkown: function(node) {
+
+        /* Add neighbors and sort them */
+        this.addNeighbors(node);
+
         /* Guess type */
         node.guessType(this.k);
 
         // console.log(node.guess.type);
     },
 
-    determineUnknown: function() {
+
+    determineAllUnknown: function() {
 
         this.calculateRanges();
 
@@ -81,28 +92,11 @@ _.extend(NodeManager.prototype, {
          */
         for (var i in this.nodes) {
 
+            // when type of node is unknown, guess it
             if (!this.nodes[i].type) {
 
-                // console.log("determining unknown node: ", this.nodes[i]);
-                /*
-                 * If node doesn't have a type
-                 * clone the nodes list and then measure distances.
-                 */
-
-                /* Clone nodes */
-                this.nodes[i].neighbors = [];
-                for (var j in this.nodes) {
-                    if (!this.nodes[j].type)
-                        continue; //immediately start next cycle
-                    this.nodes[i].neighbors.push(new Node(this.nodes[j]));
-                }
-
-
-                /* Measure distances */
-                this.nodes[i].measureDistances(this.featureSpecList);
-
-                /* Sort by distance */
-                this.nodes[i].sortByDistance();
+                /* Add neighbors and sort them */
+                this.addNeighbors(this.nodes[i]);
 
                 /* Guess type */
                 this.nodes[i].guessType(this.k);
@@ -117,9 +111,9 @@ _.extend(NodeManager.prototype, {
 
         console.log("removing outliers, starting with list ", this.nodes);
 
-        this.calculateRanges();
-
         var toRemove = [];
+
+        this.calculateRanges();
 
         for (var i in this.nodes) {
 
@@ -127,30 +121,19 @@ _.extend(NodeManager.prototype, {
 
                 var actualType = this.nodes[i].type;
 
-                /* Clone nodes */
-                this.nodes[i].neighbors = [];
-                for (var j in this.nodes) {
-                    if (!this.nodes[j].type)
-                        continue; //immediately start next cycle
-                    this.nodes[i].neighbors.push(new Node(this.nodes[j]));
-                }
-
-                /* Measure distances */
-                this.nodes[i].measureDistances(this.featureSpecList);
-
-                /* Sort by distance */
-                this.nodes[i].sortByDistance();
+                /* Add neighbors and sort them */
+                this.addNeighbors(this.nodes[i]);
 
                 /* Guess type */
                 this.nodes[i].guessType(this.k);
-
                 var guessedType = this.nodes[i].guess.type;
 
-                console.log("guess: " + guessedType + "; actual: " + actualType);
+                /* now that the type was guesssed, we don't need the neighbors anymore, so kill them! */
+                this.nodes[i].neighbors = undefined;
 
                 if (this.nodes[i].guess.type != actualType) {
                     toRemove.push(i);
-                    console.log("OUTLIER! Kill him!");
+                    console.log("OUTLIER! Kill him!" + " - guess: " + guessedType + "; actual: " + actualType);
                 }
             }
         }
@@ -163,7 +146,7 @@ _.extend(NodeManager.prototype, {
         };
 
         for (var i = this.nodes.length - 1; i >= 0; i--) {
-            if (!this.nodes[i].remove){
+            if (!this.nodes[i].remove) {
                 newNodeList.push(this.nodes[i]);
             }
         };
@@ -175,6 +158,71 @@ _.extend(NodeManager.prototype, {
         this.draw("canvas", false);
 
     },
+
+
+    // Condensed Nearest Neighbours Data Reduction
+    cnnReduction: function() {
+
+        // Go through the training set, removing each point in turn,
+        // and checking whether it is recognised as the correct class or not
+        this.removeOutliers();
+
+        // Make a new database (will contain prototype nodes), and add a random point
+        var prototypeNodes = [];
+        // var randomNode = createRandomNode("music");
+        prototypeNodes.push(this.nodes[0]);
+
+        // Pick any point from the original set, and see if it is recognised
+        // as the correct class based on the points in the new database,
+        // using kNN with k = 1
+
+        // Repeat the scan until no more prototypes are added to U.
+
+        var prototypesAdded = true;
+
+        while (prototypesAdded == true) {
+
+            prototypesAdded = false;
+
+            for (var i = this.nodes.length - 1; i >= 0; i--) {
+
+                if (!this.nodes[i].remove) {
+
+                    var actualType = this.nodes[i].type;
+
+                    /* Add neighbors and sort them */
+                    this.addNeighbors(this.nodes[i]);
+
+                    /* Guess type */
+                    this.nodes[i].guessType(1);
+                    var guessedType = this.nodes[i].guess.type;
+
+                    /* now that the type was guesssed, we don't need the neighbors property anymore */
+                    this.nodes[i].neighbors = undefined;
+
+
+                    if (this.nodes[i].guess.type != actualType) {
+
+                        this.nodes[i].remove = true;
+
+                        prototypeNodes.push(this.nodes[i]);
+                        prototypesAdded = true;
+
+                        console.log("types not equal, node added to prototypes");
+
+                    } //if
+
+                } // if
+
+            } // for
+
+        } // while
+
+
+        this.nodes = prototypeNodes;
+        this.draw("canvas", false);
+    },
+
 
 });
 
