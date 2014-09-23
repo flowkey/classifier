@@ -1,10 +1,10 @@
 {
     "packages": {
         "webaudio-manager": {
-            "git": "https://github.com/flowkey/webaudio-manager.git"
+            "git": "git@github.com:flowkey/webaudio-manager.git"
         },
         "audiofeatures": {
-            "git": "https://github.com/flowkey/audiofeatures.git"
+            "git": "git@github.com:flowkey/audiofeatures.git"
         }
     }
 }
