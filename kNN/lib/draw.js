@@ -3,6 +3,8 @@ _.extend(NodeManager.prototype, {
 
     draw: function(canvas_id, drawRadius) {
 
+        console.log("available types: ", this.types)
+
         /*
          * get features by name from featureSpecList
          */
@@ -24,6 +26,10 @@ _.extend(NodeManager.prototype, {
 
             //this switch is limited to 3 differenct colors
             //if there are more than 3 types, this code should improved
+
+            console.log("draw following type: ", this.nodes[i].type);
+
+
             switch (this.nodes[i].type) {
                 case this.types[0]:
                     ctx.fillStyle = 'red';
