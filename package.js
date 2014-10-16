@@ -16,7 +16,7 @@ Package.onUse(function(api, where) {
     // add classifier
     api.addFiles(['lib/classifierGraph.js', 'lib/flow-classifier.js'], 'client');
 
-    api.export('Classifier');
+    api.export(['Classifier']);
 });
 
 Package.onTest(function(api) {

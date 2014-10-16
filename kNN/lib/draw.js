@@ -62,9 +62,11 @@ _.extend(NodeManager.prototype, {
 
             /* 
              * Is this an unknown node? If so, draw the radius of influence
+             *
+             * this switch is limited to 3 differenct colors
+             * if there are more than 3 types, this code should get enhanced somehow
+             *
              */
-            //this switch is limited to 3 differenct colors
-            //if there are more than 3 types, this code should improved
             if (!this.nodes[i].type && drawRadius) {
                 switch (this.nodes[i].guess.type) {
                     case this.types[0]:
