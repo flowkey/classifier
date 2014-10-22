@@ -3,15 +3,15 @@ _.extend(NodeManager.prototype, {
 
     draw: function(canvas_id, drawRadius) {
 
-        console.log("available types: ", this.types)
+        var canvas_id = canvas_id || "canvas";
+        var drawRadius = drawRadius || false;
 
-        /*
-         * get features by name from featureSpecList
-         */
+
+         // get features by name from featureSpecList
         var featureX = this.getFeatureByName(this.toDraw[0]);
         var featureY = this.getFeatureByName(this.toDraw[1]);
 
-
+        // calculate ranges to adjust nodes in canvas
         var featureX_range = featureX.max - featureX.min;
         var featureY_range = featureY.max - featureY.min;
 
@@ -24,9 +24,10 @@ _.extend(NodeManager.prototype, {
         for (var i in this.nodes) {
             ctx.save();
 
-            //this switch is limited to 3 differenct colors
-            //if there are more than 3 types, this code should improved
-
+            /*
+             * this switch is limited to 3 differenct colors
+             * if there are more than 3 types, this code should get enhanced somehow
+             */
             console.log("draw following type: ", this.nodes[i].type);
 
 
@@ -65,7 +66,6 @@ _.extend(NodeManager.prototype, {
              *
              * this switch is limited to 3 differenct colors
              * if there are more than 3 types, this code should get enhanced somehow
-             *
              */
             if (!this.nodes[i].type && drawRadius) {
                 switch (this.nodes[i].guess.type) {

@@ -52,14 +52,21 @@ _.extend(NodeManager.prototype, {
         return randomNode;
     },
 
-    addNeighbors: function(node) {
+    addNeighbors: function(node, prototypes) {
+
+        var nodeList;
+        if (prototypes){ // for cnn reduction
+            nodeList = prototypes;
+        }else{
+            nodeList = this.nodes;
+        }
 
         /* Clone nodes */
         node.neighbors = [];
-        for (var j in this.nodes) {
-            if (!this.nodes[j].type)
+        for (var j in nodeList) {
+            if (!nodeList[j].type)
                 continue; //immediately start next cycle
-            node.neighbors.push(new Node(this.nodes[j]));
+            node.neighbors.push(new Node(nodeList[j]));
         }
 
         /* Measure distances */
@@ -73,7 +80,7 @@ _.extend(NodeManager.prototype, {
 
     determineSingleUnkown: function(node) {
 
-        /* Add neighbors and sort them */
+        /* Add neighbors */
         this.addNeighbors(node);
 
         /* Guess type */
@@ -160,24 +167,33 @@ _.extend(NodeManager.prototype, {
     },
 
 
-    // Condensed Nearest Neighbours Data Reduction
+    /* 
+     * Condensed Nearest Neighbours Data Reduction:
+     * Go through the training set, removing each point in turn,
+     * and check whether it is recognised as the correct class or not
+     */
     cnnReduction: function() {
 
-        // Go through the training set, removing each point in turn,
-        // and checking whether it is recognised as the correct class or not
         this.removeOutliers();
 
-        // Make a new database (will contain prototype nodes), and add a random point
+        /*
+         * Make a new database (will contain prototype nodes)
+         */
         var prototypeNodes = [];
-        // var randomNode = createRandomNode("music");
+
+        /*
+         * we need at least one node in the prototype nodes for starting the algorithm
+         * so just put the first one that we have into it
+         */
         prototypeNodes.push(this.nodes[0]);
 
-        // Pick any point from the original set, and see if it is recognised
-        // as the correct class based on the points in the new database,
-        // using kNN with k = 1
-
-        // Repeat the scan until no more prototypes are added to U.
-
+        /*
+         * Pick any point from the original set, and see if it is recognised
+         * as the correct class based on the points in the new database,
+         * using kNN with k = 1
+         * 
+         * Repeat the scan until no more prototypes are added
+         */
         var prototypesAdded = true;
 
         while (prototypesAdded == true) {
@@ -186,24 +202,24 @@ _.extend(NodeManager.prototype, {
 
             for (var i = this.nodes.length - 1; i >= 0; i--) {
 
+                // if it's tagged with remove, it's already have been processed
                 if (!this.nodes[i].remove) {
 
                     var actualType = this.nodes[i].type;
 
                     /* Add neighbors and sort them */
-                    this.addNeighbors(this.nodes[i]);
+                    this.addNeighbors(this.nodes[i], prototypeNodes);
 
                     /* Guess type */
                     this.nodes[i].guessType(1);
                     var guessedType = this.nodes[i].guess.type;
 
-                    /* now that the type was guesssed, we don't need the neighbors property anymore */
+                    /* now that the type was guesssed, we don't need the neighbors anymore */
                     this.nodes[i].neighbors = undefined;
 
+                    if (guessedType != actualType) {
 
-                    if (this.nodes[i].guess.type != actualType) {
-
-                        this.nodes[i].remove = true;
+                        // this.nodes[i].remove = true;
 
                         prototypeNodes.push(this.nodes[i]);
                         prototypesAdded = true;
@@ -218,8 +234,9 @@ _.extend(NodeManager.prototype, {
 
         } // while
 
-
-        this.nodes = prototypeNodes;
+        if (prototypeNodes.length > 1){
+            this.nodes = prototypeNodes;
+        }
         this.draw("canvas", false);
     },
 
