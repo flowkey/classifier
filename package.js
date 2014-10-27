@@ -14,7 +14,7 @@ Package.onUse(function(api, where) {
     api.addFiles(['kNN/lib/kNearestNeighbor.js', 'kNN/lib/draw.js'], 'client');
 
     // add classifier
-    api.addFiles(['lib/classifierGraph.js', 'lib/flow-classifier.js'], 'client');
+    api.addFiles(['lib/flow-classifier.js', 'lib/classifierGraph.js'], 'client');
 
     api.export(['Classifier']);
 });
