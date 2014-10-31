@@ -6,7 +6,7 @@ Package.describe({
 
 Package.onUse(function(api, where) {
 
-    api.use(['flow-core', 'webaudio-manager', 'audiofeatures']); // private packages look at smart.json
+    api.use(['flow-core', 'audiofeatures']); // private packages look at smart.json
     api.use(['flowkey:math-tools', 'flowkey:functionstack', 'flowkey:dsp', 'flowkey:histogram', 'underscore']); // community packages -> athmosphere
 
 
