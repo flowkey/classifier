@@ -1,7 +1,8 @@
 {
     "packages": {
         "webaudio-manager": {
-            "git": "git@github.com:flowkey/webaudio-manager.git"
+            "git": "git@github.com:flowkey/webaudio-manager.git",
+            "branch": "wamChange"
         },
         "audiofeatures": {
             "git": "git@github.com:flowkey/audiofeatures.git"
