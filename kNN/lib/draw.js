@@ -26,19 +26,19 @@ _.extend(NodeManager.prototype, {
 
             /*
              * this switch is limited to 3 differenct colors
-             * if there are more than 3 types, this code should get enhanced somehow
+             * if there are more than 3 classes, this code should get enhanced somehow
              */
-            console.log("draw following type: ", this.nodes[i].type);
+            console.log("draw following classType: ", this.nodes[i].classType);
 
 
-            switch (this.nodes[i].type) {
-                case this.types[0]:
+            switch (this.nodes[i].classType) {
+                case this.classes[0]:
                     ctx.fillStyle = 'red';
                     break;
-                case this.types[1]:
+                case this.classes[1]:
                     ctx.fillStyle = 'green';
                     break;
-                case this.types[2]:
+                case this.classes[2]:
                     ctx.fillStyle = 'blue';
                     break;
                 default:
@@ -65,17 +65,17 @@ _.extend(NodeManager.prototype, {
              * Is this an unknown node? If so, draw the radius of influence
              *
              * this switch is limited to 3 differenct colors
-             * if there are more than 3 types, this code should get enhanced somehow
+             * if there are more than 3 classes, this code should get enhanced somehow
              */
-            if (!this.nodes[i].type && drawRadius) {
-                switch (this.nodes[i].guess.type) {
-                    case this.types[0]:
+            if (!this.nodes[i].classType && drawRadius) {
+                switch (this.nodes[i].guess.classType) {
+                    case this.classes[0]:
                         ctx.strokeStyle = 'red';
                         break;
-                    case this.types[1]:
+                    case this.classes[1]:
                         ctx.strokeStyle = 'green';
                         break;
-                    case this.types[2]:
+                    case this.classes[2]:
                         ctx.strokeStyle = 'blue';
                         break;
                     default:

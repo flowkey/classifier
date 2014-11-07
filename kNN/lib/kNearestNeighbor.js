@@ -3,7 +3,7 @@ NodeManager = function(k) {
     this.k = k;
     this.r = 1;
     this.featureSpecList = [];
-    this.types = [];
+    this.classes = [];
     this.toDraw = [];
 
 };
@@ -35,7 +35,7 @@ _.extend(NodeManager.prototype, {
         }
     },
 
-    createRandomNode: function(type) {
+    createRandomNode: function(classType) {
 
         var randomNode = new Node();
 
@@ -43,10 +43,10 @@ _.extend(NodeManager.prototype, {
             randomNode[this.featureSpecList[i].name] = Math.floor(Math.random() * this.featureSpecList[i].max) + this.featureSpecList[i].min;
         };
 
-        if (type) {
-            randomNode.type = type;
+        if (classType) {
+            randomNode.classType = classType;
         } else {
-            randomNode.type = false;
+            randomNode.classType = false;
         }
 
         return randomNode;
@@ -55,16 +55,16 @@ _.extend(NodeManager.prototype, {
     addNeighbors: function(node, prototypes) {
 
         var nodeList;
-        if (prototypes){ // for cnn reduction
+        if (prototypes) { // for cnn reduction
             nodeList = prototypes;
-        }else{
+        } else {
             nodeList = this.nodes;
         }
 
         /* Clone nodes */
         node.neighbors = [];
         for (var j in nodeList) {
-            if (!nodeList[j].type)
+            if (!nodeList[j].classType)
                 continue; //immediately start next cycle
             node.neighbors.push(new Node(nodeList[j]));
         }
@@ -83,10 +83,10 @@ _.extend(NodeManager.prototype, {
         /* Add neighbors */
         this.addNeighbors(node);
 
-        /* Guess type */
-        node.guessType(this.k);
+        /* Guess classType */
+        node.guessClass(this.k);
 
-        // console.log(node.guess.type);
+        // console.log("determineSingleUnknown: ", node.guess.classType);
     },
 
 
@@ -95,20 +95,20 @@ _.extend(NodeManager.prototype, {
         this.calculateRanges();
 
         /*
-         * Loop through our nodes and look for unknown types.
+         * Loop through our nodes and look for unknown classes.
          */
         for (var i in this.nodes) {
 
             // when type of node is unknown, guess it
-            if (!this.nodes[i].type) {
+            if (!this.nodes[i].classType) {
 
                 /* Add neighbors and sort them */
                 this.addNeighbors(this.nodes[i]);
 
-                /* Guess type */
-                this.nodes[i].guessType(this.k);
+                /* Guess classType */
+                this.nodes[i].guessClass(this.k);
 
-                console.log(this.nodes[i].guess.type);
+                console.log(this.nodes[i].guess.classType);
 
             }
         }
@@ -124,23 +124,23 @@ _.extend(NodeManager.prototype, {
 
         for (var i in this.nodes) {
 
-            if (this.nodes[i].type) {
+            if (this.nodes[i].classType) {
 
-                var actualType = this.nodes[i].type;
+                var actualClassType = this.nodes[i].classType;
 
                 /* Add neighbors and sort them */
                 this.addNeighbors(this.nodes[i]);
 
                 /* Guess type */
-                this.nodes[i].guessType(this.k);
-                var guessedType = this.nodes[i].guess.type;
+                this.nodes[i].guessClass(this.k);
+                var guessedType = this.nodes[i].guess.classType;
 
                 /* now that the type was guesssed, we don't need the neighbors anymore, so kill them! */
                 this.nodes[i].neighbors = undefined;
 
-                if (this.nodes[i].guess.type != actualType) {
+                if (this.nodes[i].guess.classType != actualClassType) {
                     toRemove.push(i);
-                    console.log("OUTLIER! Kill him!" + " - guess: " + guessedType + "; actual: " + actualType);
+                    console.log("OUTLIER! Kill him!" + " - guess: " + guessedType + "; actual: " + actualClassType);
                 }
             }
         }
@@ -170,7 +170,7 @@ _.extend(NodeManager.prototype, {
     /* 
      * Condensed Nearest Neighbours Data Reduction:
      * Go through the training set, removing each point in turn,
-     * and check whether it is recognised as the correct class or not
+     * and check whether it is recognised as the correct classType or not
      */
     cnnReduction: function() {
 
@@ -189,9 +189,9 @@ _.extend(NodeManager.prototype, {
 
         /*
          * Pick any point from the original set, and see if it is recognised
-         * as the correct class based on the points in the new database,
+         * as the correct classType based on the points in the new database,
          * using kNN with k = 1
-         * 
+         *
          * Repeat the scan until no more prototypes are added
          */
         var prototypesAdded = true;
@@ -205,14 +205,14 @@ _.extend(NodeManager.prototype, {
                 // if it's tagged with remove, it's already have been processed
                 if (!this.nodes[i].remove) {
 
-                    var actualType = this.nodes[i].type;
+                    var actualType = this.nodes[i].classType;
 
                     /* Add neighbors and sort them */
                     this.addNeighbors(this.nodes[i], prototypeNodes);
 
                     /* Guess type */
-                    this.nodes[i].guessType(1);
-                    var guessedType = this.nodes[i].guess.type;
+                    this.nodes[i].guessClass(1);
+                    var guessedType = this.nodes[i].guess.classType;
 
                     /* now that the type was guesssed, we don't need the neighbors anymore */
                     this.nodes[i].neighbors = undefined;
@@ -224,7 +224,7 @@ _.extend(NodeManager.prototype, {
                         prototypeNodes.push(this.nodes[i]);
                         prototypesAdded = true;
 
-                        console.log("types not equal, node added to prototypes");
+                        console.log("classTypes not equal, node added to prototypes");
 
                     } //if
 
@@ -234,7 +234,7 @@ _.extend(NodeManager.prototype, {
 
         } // while
 
-        if (prototypeNodes.length > 1){
+        if (prototypeNodes.length > 1) {
             this.nodes = prototypeNodes;
         }
         this.draw("canvas", false);
@@ -296,33 +296,71 @@ _.extend(Node.prototype, {
         });
     },
 
-    guessType: function(k) {
-        var types = {};
+    // guessClass: function(k) {
+    //     var kNeighbors = this.neighbors.slice(0, k);
+
+    //     console.log("neighbors", this.neighbors);
+
+    //     // count
+    //     var classCounts = {};
+    //     _.each(kNeighbors, function(neighbor, i) {
+    //         if (!classCounts[neighbor.classType]) {
+    //             classCounts[neighbor.classType] = 0;
+    //         }
+    //         classCounts[neighbor.classType] += 1;
+    //     });
+
+    //     console.log("classCounts: ", classCounts);
+
+    //     //get max
+    //     var maxClassType;
+    //     var maxCount = 0;
+    //     _.each(classCounts, function(count, classType, classCounts) {
+    //         console.log("classType:", classType , " count:", count);
+    //         if (maxClassType == undefined || count > maxCount) {
+    //             maxClassType = classType;
+    //             maxCount = count;
+    //         }
+    //     });
+
+    //     // console.log("maxClassType:", maxClassType , " maxCount:", maxCount);
+
+    //     this.guess = {
+    //         classType: maxClassType,
+    //         count: maxCount
+    //     };
+
+    //     return classCounts;
+    // },
+
+    guessClass: function(k) {
+        var classes = {};
 
         for (var i in this.neighbors.slice(0, k)) {
             var neighbor = this.neighbors[i];
 
-            if (!types[neighbor.type]) {
-                types[neighbor.type] = 0;
+            if (!classes[neighbor.classType]) {
+                classes[neighbor.classType] = 0;
             }
 
-            types[neighbor.type] += 1;
+            classes[neighbor.classType] += 1;
         }
 
         var guess = {
-            type: false,
+            classType: false,
             count: 0
         };
-        for (var type in types) {
-            if (types[type] > guess.count) {
-                guess.type = type;
-                guess.count = types[type];
+
+        for (var classType in classes) {
+            if (classes[classType] > guess.count) {
+                guess.classType = classType;
+                guess.count = classes[classType];
             }
         }
 
         this.guess = guess;
 
-        return types;
+        return classes;
     }
 
 });
