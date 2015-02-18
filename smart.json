@@ -2,11 +2,11 @@
     "packages": {
         "webaudio-manager": {
             "git": "git@github.com:flowkey/webaudio-manager.git",
-            "branch": "lowNoteDetect"
+            "branch": "master"
         },
         "audiofeatures": {
             "git": "git@github.com:flowkey/audiofeatures.git",
-            "branch": "lowNoteDetect"
+            "branch": "master"
         }
     }
 }
